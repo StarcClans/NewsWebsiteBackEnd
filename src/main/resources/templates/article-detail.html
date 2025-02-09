@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Article Detail</title>
+</head>
+<body>
+
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+  <p>Welcome, <span th:text="${#authentication.principal.username}"></span>!</p>
+  <p th:if="${#authorization.expression('hasRole(''ADMIN'')')}">Logged in as Administrator</p>
+  <p th:if="${#authorization.expression('hasRole(''USER'')')}">Logged in as User</p>
+  <p th:if="${#authorization.expression('hasRole(''GUEST'')')}">Logged in as Guest</p>
+
+  <form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout"/>
+  </form>
+</div>
+
+<div th:unless="${#authorization.expression('isAuthenticated()')}">
+  <p>You are currently browsing as a guest.</p>
+  <a th:href="@{/login}" class="button">Login</a>
+  <a th:href="@{/register}" class="button">Register</a>
+  <a th:href="@{/guest}" class="button">Continue as Guest</a>
+</div>
+
+<div th:if="${article}">
+    <h1 th:text="${article.title}"></h1>
+    <p th:text="${article.abstractText}"></p>
+    <p><strong>Byline:</strong> <span th:text="${article.byline}"></span></p>
+    <p><strong>Source:</strong> <span th:text="${article.source}"></span></p>
+    <p><strong>Published Date:</strong> <span
+            th:text="${#temporals.format(article.publishedDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+    <p><strong>Updated Date:</strong> <span
+            th:text="${#temporals.format(article.updatedDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+    <p><strong>Created Date:</strong> <span
+            th:text="${#temporals.format(article.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+    <p><strong>Section:</strong> <span th:text="${article.section}"></span></p>
+    <p><strong>Subsection:</strong> <span th:text="${article.subsection}"></span></p>
+
+    <div th:if="${article.multimedia}">
+        <h2>Multimedia:</h2>
+         <div th:each="media : ${objectMapper.readValue(article.multimedia, T(java.util.List))}">
+              <img th:if="${media.url}" th:src="${media.url}" th:alt="${media.caption}" style="max-width: 200px; max-height: 200px;"/>
+         </div>
+    </div>
+       <div th:if="${article.relatedUrls}" >
+        <h2>Related URLs:</h2>
+           <ul th:each="related : ${objectMapper.readValue(article.relatedUrls, T(java.util.List))}">
+               <li>
+                <a th:href="${related.url}" target="_blank" th:text="${related.suggested_link_text}"></a>
+              </li>
+          </ul>
+    </div>
+    <a th:href="${article.url}" target="_blank">Read Full Article</a>
+</div>
+<div th:unless="${article}">
+    <p>No article available</p>
+</div>
+</body>
+</html>

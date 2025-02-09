@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Select News Source</title>
+    <style>
+         .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<a th:href="@{/register}" class="button">Register</a>
+<a th:href="@{/login}" class="button">Login</a>
+<a th:href="@{/guest}" class="button">Continue as Guest</a>
+</body>
+<body>
+    <h1>Select News Source</h1>
+    <a th:href="@{/sections(source='all')}" class="button">All Sources</a>
+    <a th:href="@{/sections(source='nyt')}" class="button">New York Times</a>
+    <a th:href="@{/sections(source='inyt')}" class="button">International New York Times</a>
+</body>
+</html>

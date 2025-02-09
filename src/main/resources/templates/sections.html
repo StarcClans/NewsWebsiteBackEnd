@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>News Sections</title>
+    <style>
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<h1>Choose News Section</h1>
+<div th:each="section : ${sections}">
+<a th:href="@{/articles(section=${section.section}, source=${source})}" class="button" th:text="${section.displayName}">Section</a>
+</div>
+</body>
+</html>
