@@ -15,37 +15,39 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username("user")
-                .password("password")
-                .roles("USER")
-                .build();
-
-        UserDetails admin = User.withDefaultPasswordEncoder()
-                .username("admin")
-                .password("password")
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, admin);
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasRole("USER")
-                        .requestMatchers("/", "/sections", "/articles", "/article-detail", "/guest/**").permitAll() // Guest paths
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/", "/home", "/register", "/guest/**").permitAll() // Allow unauthenticated access to these
+                        .requestMatchers("/admin/**").hasRole("ADMIN")  //Example RBAC
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
+                .formLogin((form) -> form
+                        .loginPage("/login") // Your custom login page
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .permitAll());
+                .logout((logout) -> logout.permitAll());
 
         return http.build();
+    }
+
+    // In-memory user details service for simplicity (replace with your database)
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user =
+                User.withDefaultPasswordEncoder()
+                        .username("user")
+                        .password("password")
+                        .roles("USER")
+                        .build();
+
+        UserDetails admin =
+                User.withDefaultPasswordEncoder()
+                        .username("admin")
+                        .password("password")
+                        .roles("ADMIN")
+                        .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
     }
 }

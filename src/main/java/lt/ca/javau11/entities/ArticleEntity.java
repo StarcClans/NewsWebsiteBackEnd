@@ -60,6 +60,7 @@ public class ArticleEntity {
     private Long userId;
 
 
+
 	public String getUri() {
 		return uri;
 	}
